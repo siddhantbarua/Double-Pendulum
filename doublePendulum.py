@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import pygame
 import os
 from math import *
@@ -8,14 +10,14 @@ os.environ["SDL_VIDEO_CENTERED"] = '1'
 
 pygame.init()
 pygame.display.set_caption("Yoo")
-fps = 30
+fps = 20
 
-win = pygame.display.set_mode((1920, 1080))
+win = pygame.display.set_mode((1920//2, 1080//2))
 clk = pygame.time.Clock()
 
 # Parameters
 # Masses 
-m1 = 20
+m1 = 10
 m2 = 10
 # Lengths
 l1 = 200
@@ -23,28 +25,28 @@ l2 = 100
 # Gravitational acceleration
 g = 9.8
 
-# Initial Coordinates
+# Initial Conditions
 # Angles
 theta1 = pi/2
 theta2 = pi/2
 # Angular velocities
 w1 = 0
-w2 = 0.5
+w2 = 1
 # Angular acceleration
-alpha1 = 0
-alpha2 = 0
+alpha1 = -1
+alpha2 = 2
 
 # List of points
 pts1 = []
 pts2 = []
 
 # Fixed point
-x0 = 1920 // 2
-y0 = 1080 // 4
+x0 = 1920 // 4
+y0 = 1080 // 8
 
 run = True
 
-#n = 0
+n = 20
 
 while run:
     clk.tick(fps)
@@ -73,14 +75,22 @@ while run:
     #Update coordinates
     w1 += alpha1
     w2 += alpha2
-    theta1 += w1
-    theta2 += w2
+    theta1 = (theta1 + w1) % (2*pi)
+    theta2 = (theta2 + w2) % (2*pi)
 
     pts1.append((x1, y1))
     pts2.append((x2, y2))
 
-    if len(pts2) > 1:
-        pygame.draw.lines(win, (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255)), False, pts2)
+
+    #if len(pts2) > 1 and len(pts2) < 10:
+    #    pygame.draw.lines(win, (), False, pts2)
+
+    if len(pts2) > 20:
+        pygame.draw.lines(win, (n%255, (100-0.1*n)%255, (200-2*n)%255), False, pts2[-19:], 3)
+
+
+    #if len(pts2) > 1:
+    #    pygame.draw.lines(win, (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255)), False, pts2)
 
     # for pt in pts2:
     #     if len(pts2) > 1:
@@ -88,18 +98,18 @@ while run:
             #pygame.draw.line(win, (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255)), pts2[n-1], pts2[n])
 
 
-    #n += 1
+    n += 1
 
     # Wires
-    pygame.draw.line(win, (255,255, 255), (x0, y0), (x1, y1), 2)
-    pygame.draw.line(win, (255, 255, 255), (x1, y1), (x2, y2), 2)
+    pygame.draw.line(win, (255,255, 255), (x0, y0), (x1, y1), 4)
+    pygame.draw.line(win, (255, 255, 255), (x1, y1), (x2, y2), 4)
 
     # Bobs
     pygame.draw.circle(win, (100, 100, 100), (x1, y1), 10)
-    pygame.draw.circle(win, (100, 100, 100), (x2, y2), 10)
+    pygame.draw.circle(win, (150, 150, 150), (x2, y2), 10)
 
-    if len(pts1) > 1:
-        pygame.draw.lines(win, (100, 100, 100), False, pts1)
+    #if len(pts1) > 1:
+    #    pygame.draw.lines(win, (100, 100, 100), False, pts1)
 
     pygame.display.flip()
 
