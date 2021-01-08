@@ -9,8 +9,13 @@ import random
 os.environ["SDL_VIDEO_CENTERED"] = '1'
 
 pygame.init()
-pygame.display.set_caption("Yoo")
-fps = 20
+pygame.mixer.music.load('claire.wav')
+pygame.mixer.music.play(-1)
+
+pygame.display.set_caption("p: Show trajectory map")
+fps = 30
+
+t_step = 0.3
 
 win = pygame.display.set_mode((1920//2, 1080//2))
 clk = pygame.time.Clock()
@@ -18,9 +23,9 @@ clk = pygame.time.Clock()
 # Parameters
 # Masses 
 m1 = 10
-m2 = 10
+m2 = 15
 # Lengths
-l1 = 200
+l1 = 100
 l2 = 100
 # Gravitational acceleration
 g = 9.8
@@ -28,13 +33,13 @@ g = 9.8
 # Initial Conditions
 # Angles
 theta1 = pi/2
-theta2 = pi/2
+theta2 = pi/4
 # Angular velocities
-w1 = 0
-w2 = 1
+w1 = 0.5
+w2 = 0
 # Angular acceleration
-alpha1 = -1
-alpha2 = 2
+alpha1 = 0
+alpha2 = -0.5
 
 # List of points
 pts1 = []
@@ -43,10 +48,9 @@ clr2 = []
 
 # Fixed point
 x0 = 1920 // 4
-y0 = 1080 // 8
+y0 = 1080 // 4
 
 run = True
-
 n = 20
 
 while run:
@@ -70,10 +74,10 @@ while run:
     y2 = y1 + l2*cos(theta2)
 
     #Update coordinates
-    w1 += alpha1
-    w2 += alpha2
-    theta1 = (theta1 + w1) % (2*pi)
-    theta2 = (theta2 + w2) % (2*pi)
+    w1 += t_step*alpha1
+    w2 += t_step*alpha2
+    theta1 = (theta1 + t_step*w1) % (2*pi)
+    theta2 = (theta2 + t_step*w2) % (2*pi)
 
     pts1.append((x1, y1))
     pts2.append((x2, y2))
@@ -115,17 +119,19 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p:
+                pygame.mixer.music.stop()
+                pygame.mixer.music.load('bleed.wav')
+                pygame.mixer.music.play(-1)
                 win.fill((0, 0, 0))
                 pygame.draw.lines(win, (100, 100, 100), False, pts1)
                 for i in range(0, len(clr2)):
-                    pygame.draw.lines(win, clr2[i], False, pts2[i*10 : i*10+11])
+                    pygame.draw.lines(win, clr2[i], False, pts2[i*10 : i*10+11], 2)
                 run = False
 
         if event.type == pygame.QUIT:
             run = False
 
     pygame.display.flip()
-
 
 disp = True
 while disp:
