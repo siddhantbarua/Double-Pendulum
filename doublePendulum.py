@@ -17,28 +17,28 @@ fps = 30
 
 t_step = 0.3
 
-win = pygame.display.set_mode((1920//2, 1080//2))
+win = pygame.display.set_mode((1920, 1080))
 clk = pygame.time.Clock()
 
 # Parameters
 # Masses 
-m1 = 10
-m2 = 15
+m1 = 30
+m2 = 35
 # Lengths
-l1 = 100
-l2 = 100
+l1 = 150
+l2 = 200
 # Gravitational acceleration
 g = 9.8
 
 # Initial Conditions
 # Angles
 theta1 = pi/2
-theta2 = pi/4
+theta2 = pi/2
 # Angular velocities
-w1 = 0.5
+w1 = 0
 w2 = 0
 # Angular acceleration
-alpha1 = 0
+alpha1 = 0.5
 alpha2 = -0.5
 
 # List of points
@@ -47,8 +47,8 @@ pts2 = []
 clr2 = []
 
 # Fixed point
-x0 = 1920 // 4
-y0 = 1080 // 4
+x0 = 1920 // 2
+y0 = 1080 // 2
 
 run = True
 n = 20
@@ -88,7 +88,7 @@ while run:
 
     if len(pts2) > 9:
         if (len(pts2)%10 == 0):
-            clr = (n%255, (100-0.1*n)%255, (200-2*n)%255)
+            clr = ((0.5*n)%255, (100-0.5*n)%255, (200-n)%255)
             clr2.append(clr)
 
         pygame.draw.lines(win, clr, False, pts2[-9:], 3)
