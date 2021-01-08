@@ -39,6 +39,7 @@ alpha2 = 2
 # List of points
 pts1 = []
 pts2 = []
+clr2 = []
 
 # Fixed point
 x0 = 1920 // 4
@@ -51,10 +52,6 @@ n = 20
 while run:
     clk.tick(fps)
     win.fill((0, 0, 0))
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
 
     # Nerdy Stuff
     num1 = -g*(2*m1+m2)*sin(theta1) - m2*g*sin(theta1-2*theta2) - 2*sin(theta1-theta1)*m2*(w2*w2*l2+w1*w1*l1*cos(theta1-theta2))
@@ -85,8 +82,12 @@ while run:
     #if len(pts2) > 1 and len(pts2) < 10:
     #    pygame.draw.lines(win, (), False, pts2)
 
-    if len(pts2) > 20:
-        pygame.draw.lines(win, (n%255, (100-0.1*n)%255, (200-2*n)%255), False, pts2[-19:], 3)
+    if len(pts2) > 9:
+        if (len(pts2)%10 == 0):
+            clr = (n%255, (100-0.1*n)%255, (200-2*n)%255)
+            clr2.append(clr)
+
+        pygame.draw.lines(win, clr, False, pts2[-9:], 3)
 
 
     #if len(pts2) > 1:
@@ -108,10 +109,29 @@ while run:
     pygame.draw.circle(win, (100, 100, 100), (x1, y1), 10)
     pygame.draw.circle(win, (150, 150, 150), (x2, y2), 10)
 
-    #if len(pts1) > 1:
-    #    pygame.draw.lines(win, (100, 100, 100), False, pts1)
+    if len(pts1) > 1:
+        pygame.draw.lines(win, (100, 100, 100), False, pts1)
+
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_p:
+                win.fill((0, 0, 0))
+                pygame.draw.lines(win, (100, 100, 100), False, pts1)
+                for i in range(0, len(clr2)):
+                    pygame.draw.lines(win, clr2[i], False, pts2[i*10 : i*10+11])
+                run = False
+
+        if event.type == pygame.QUIT:
+            run = False
 
     pygame.display.flip()
+
+
+disp = True
+while disp:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            disp = False
 
 pygame.quit()
 
